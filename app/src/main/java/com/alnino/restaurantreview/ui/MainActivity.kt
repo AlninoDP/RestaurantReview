@@ -20,6 +20,7 @@ import com.alnino.restaurantreview.data.response.RestaurantResponse
 import com.alnino.restaurantreview.data.retrofit.ApiConfig
 import com.alnino.restaurantreview.databinding.ActivityMainBinding
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -50,7 +51,7 @@ class MainActivity : AppCompatActivity() {
             ViewModelProvider.NewInstanceFactory()
         )[MainViewModel::class.java]
 
-        mainViewModel.restaurant.observe(this){
+        mainViewModel.restaurant.observe(this) {
             setRestaurantData(it)
         }
 
@@ -60,13 +61,24 @@ class MainActivity : AppCompatActivity() {
         binding.rvReview.addItemDecoration(itemDecoration)
 
 
-        mainViewModel.listReview.observe(this){
+        mainViewModel.listReview.observe(this) {
             setReviewData(it)
         }
 
-        mainViewModel.isLoading.observe(this){
+        mainViewModel.isLoading.observe(this) {
             showLoading(it)
         }
+
+        mainViewModel.snackBarText.observe(this) {
+            it.getContentIfNotHandled()?.let { snackBarText ->
+                Snackbar.make(
+                    window.decorView.rootView,
+                    snackBarText,
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
+        }
+
 
         binding.btnSend.setOnClickListener {
             mainViewModel.postReview(binding.edReview.text.toString())

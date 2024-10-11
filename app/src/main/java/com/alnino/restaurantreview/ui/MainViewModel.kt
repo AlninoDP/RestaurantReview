@@ -9,6 +9,7 @@ import com.alnino.restaurantreview.data.response.PostReviewResponse
 import com.alnino.restaurantreview.data.response.Restaurant
 import com.alnino.restaurantreview.data.response.RestaurantResponse
 import com.alnino.restaurantreview.data.retrofit.ApiConfig
+import com.alnino.restaurantreview.util.Event
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -23,6 +24,11 @@ class MainViewModel : ViewModel() {
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
+
+    private val _snackBarText = MutableLiveData<Event<String>>()
+    val snackBarText: LiveData<Event<String>> = _snackBarText
+
+
 
     companion object {
         private const val TAG = "MainViewmodel"
@@ -81,6 +87,7 @@ class MainViewModel : ViewModel() {
                     val responseBody = response.body()
                     if (response.isSuccessful && responseBody != null) {
                         _listReview.value = responseBody.customerReviews
+                        _snackBarText.value = Event(responseBody.message.toString())
                     } else {
                         Log.e(TAG, "onFailure: ${response.message()}")
                     }
